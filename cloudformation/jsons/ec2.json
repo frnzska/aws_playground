@@ -1,0 +1,52 @@
+{
+    "Description": "Test and Trail stack",
+    "Outputs": {
+        "EC2Instance": {
+            "Description": "EC2",
+            "Value": {
+                "Ref": "Ec2Instance"
+            }
+        },
+        "securityGroup": {
+            "Description": "securityGroup",
+            "Value": {
+                "Ref": "simpleSg"
+            }
+        }
+    },
+    "Resources": {
+        "Ec2Instance": {
+            "Properties": {
+                "ImageId": "ami-e5083683",
+                "InstanceType": "t2.micro",
+                "KeyName": "XXX",
+                "SecurityGroups": [
+                    {
+                        "Ref": "simpleSg"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "myEC2InstanceName"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::Instance"
+        },
+        "simpleSg": {
+            "Properties": {
+                "GroupDescription": "Simple Security Group: Enable SSH access via port 22",
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "22",
+                        "IpProtocol": "tcp",
+                        "ToPort": "22"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::SecurityGroup"
+        }
+    }
+}
