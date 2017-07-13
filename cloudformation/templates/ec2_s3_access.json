@@ -1,0 +1,90 @@
+{
+    "Description": "EC2 instance with s3 access",
+    "Resources": {
+        "InstanceProfile": {
+            "Properties": {
+                "Roles": [
+                    {
+                        "Ref": "S3Role"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::InstanceProfile"
+        },
+        "S3Role": {
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "sts:AssumeRole"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "s3:List*",
+                                        "s3:Get*"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": "arn:aws:s3:::*",
+                                    "Sid": "S3Access"
+                                }
+                            ]
+                        },
+                        "PolicyName": "S3ReadPolicy"
+                    }
+                ],
+                "RoleName": "S3role"
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "myEC2Instance": {
+            "Properties": {
+                "IamInstanceProfile": {
+                    "Ref": "InstanceProfile"
+                },
+                "ImageId": "ami-e5083683",
+                "InstanceType": "t2.micro",
+                "KeyName": "XXX",
+                "SecurityGroups": [
+                    {
+                        "Ref": "simpleSG"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "MyEC2"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::Instance"
+        },
+        "simpleSG": {
+            "Properties": {
+                "GroupDescription": "shh traffic allowed",
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "22",
+                        "IpProtocol": "tcp",
+                        "ToPort": "22"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::SecurityGroup"
+        }
+    }
+}
