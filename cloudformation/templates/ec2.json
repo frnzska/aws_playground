@@ -1,5 +1,5 @@
 {
-    "Description": "Test and Trail stack",
+    "Description": "Simple EC2 stack",
     "Outputs": {
         "EC2Instance": {
             "Description": "EC2",
@@ -14,12 +14,20 @@
             }
         }
     },
+    "Parameters": {
+        "KeyName": {
+            "Description": "AWS key name to ssh, pem file",
+            "Type": "String"
+        }
+    },
     "Resources": {
         "Ec2Instance": {
             "Properties": {
                 "ImageId": "ami-e5083683",
                 "InstanceType": "t2.micro",
-                "KeyName": "XXX",
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
                 "SecurityGroups": [
                     {
                         "Ref": "simpleSg"
@@ -28,7 +36,7 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "myEC2InstanceName"
+                        "Value": "SimpleEC2Instance"
                     }
                 ]
             },
