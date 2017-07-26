@@ -1,0 +1,4 @@
+KEY_NAME: 'franzi'
+
+ec2_with_cloudwatch_agent:
+  LOG_CONFIG: 's3://franziska-adler-staging/log_config'
