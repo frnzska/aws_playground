@@ -1,6 +1,36 @@
 {
-    "Description": "EC2 instance with s3 access",
+    "Description": "EC2 instance with s3 read access",
+    "Parameters": {
+        "KeyName": {
+            "Description": "AWS key name to ssh, pem file",
+            "Type": "String"
+        }
+    },
     "Resources": {
+        "EC2InstanceWithS3Access": {
+            "Properties": {
+                "IamInstanceProfile": {
+                    "Ref": "InstanceProfile"
+                },
+                "ImageId": "ami-e5083683",
+                "InstanceType": "t2.micro",
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "SecurityGroups": [
+                    {
+                        "Ref": "simpleSG"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "EC2WithS3Access"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::Instance"
+        },
         "InstanceProfile": {
             "Properties": {
                 "Roles": [
@@ -49,28 +79,6 @@
                 "RoleName": "S3role"
             },
             "Type": "AWS::IAM::Role"
-        },
-        "myEC2Instance": {
-            "Properties": {
-                "IamInstanceProfile": {
-                    "Ref": "InstanceProfile"
-                },
-                "ImageId": "ami-e5083683",
-                "InstanceType": "t2.micro",
-                "KeyName": "XXX",
-                "SecurityGroups": [
-                    {
-                        "Ref": "simpleSG"
-                    }
-                ],
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": "MyEC2"
-                    }
-                ]
-            },
-            "Type": "AWS::EC2::Instance"
         },
         "simpleSG": {
             "Properties": {
