@@ -2,3 +2,7 @@ KEY_NAME: 'franzi'
 
 ec2_with_cloudwatch_agent:
   LOG_CONFIG: 's3://franziska-adler-staging/log_config'
+
+emr:
+  INSTANCE_COUNT: '2'
+  WRITE_BUCKET_ARN: 'arn:aws:s3:::franziska-adler-emr*'
