@@ -1,0 +1,147 @@
+{
+    "Description": "EC2 instance with cloudwatch log agent installed. Logs var/log/messages of instance to cloudwatch",
+    "Parameters": {
+        "KeyName": {
+            "Description": "AWS key name to ssh, pem file",
+            "Type": "String"
+        },
+        "LogConfig": {
+            "Description": "s3 location with log config stored",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "CFNInstanceProfile": {
+            "Properties": {
+                "Roles": [
+                    {
+                        "Ref": "ec2accessS3role"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::InstanceProfile"
+        },
+        "EC2WithCloudwatchLogsAgent": {
+            "Properties": {
+                "IamInstanceProfile": {
+                    "Ref": "CFNInstanceProfile"
+                },
+                "ImageId": "ami-e5083683",
+                "InstanceType": "t2.micro",
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "SecurityGroups": [
+                    {
+                        "Ref": "simpleSg"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "EC2withCloudwatch"
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash \n",
+                                "sudo yum update -y \n",
+                                "curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O \n",
+                                "chmod +x awslogs-agent-setup.py \n",
+                                "./awslogs-agent-setup.py -n -r eu-west-1 -c",
+                                {
+                                    "Ref": "LogConfig"
+                                },
+                                "\n"
+                            ]
+                        ]
+                    }
+                }
+            },
+            "Type": "AWS::EC2::Instance"
+        },
+        "ec2accessS3role": {
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "sts:AssumeRole"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "s3:List*",
+                                        "s3:Get*"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        "arn:aws:s3:::*"
+                                    ],
+                                    "Sid": "S3ReadAccess"
+                                },
+                                {
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents",
+                                        "logs:DescribeLogStreams"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        "arn:aws:logs:*:*:*"
+                                    ]
+                                }
+                            ]
+                        },
+                        "PolicyName": "ReadS3AndLog"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "myTestMetricFilter": {
+            "Properties": {
+                "FilterPattern": "[month, day, time, ip, action=yum*, ...]",
+                "LogGroupName": "ec2logs/var/log/messages",
+                "MetricTransformations": [
+                    {
+                        "MetricName": "myTestMetric",
+                        "MetricNamespace": "EC2Logfiles",
+                        "MetricValue": "1"
+                    }
+                ]
+            },
+            "Type": "AWS::Logs::MetricFilter"
+        },
+        "simpleSg": {
+            "Properties": {
+                "GroupDescription": "Simple Security Group: Enable SSH access via port 22",
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "22",
+                        "IpProtocol": "tcp",
+                        "ToPort": "22"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::SecurityGroup"
+        }
+    }
+}
