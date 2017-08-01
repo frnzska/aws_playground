@@ -6,3 +6,4 @@ ec2_with_cloudwatch_agent:
 emr:
   INSTANCE_COUNT: '2'
   WRITE_BUCKET_ARN: 'arn:aws:s3:::franziska-adler-emr*'
+  SUBNET_ID: 'subnet-32c41a7b'
