@@ -1,0 +1,196 @@
+{
+    "Mappings": {
+        "AZMap": {
+            "eu-west-1a": {
+                "SubnetId": "subnet-613eee06"
+            },
+            "eu-west-1b": {
+                "SubnetId": "subnet-32c41a7b"
+            },
+            "eu-west-1c": {
+                "SubnetId": "subnet-b4b9a5ec"
+            }
+        }
+    },
+    "Outputs": {
+        "AvailabilityZone": {
+            "Description": "AvailabilityZone of the EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "Ec2Instance",
+                    "AvailabilityZone"
+                ]
+            }
+        },
+        "S3AccessRole": {
+            "Description": "EC2 instance profile role",
+            "Value": {
+                "Ref": "S3AccessRole"
+            }
+        }
+    },
+    "Parameters": {
+        "AZName": {
+            "AllowedValues": [
+                "eu-west-1a",
+                "eu-west-1b",
+                "eu-west-1c"
+            ],
+            "Description": "AvailabilityZone of the stack",
+            "Type": "String"
+        },
+        "InstanceType": {
+            "Description": "Instance Type",
+            "Type": "String"
+        },
+        "KeyName": {
+            "Description": "Key Name",
+            "Type": "String"
+        },
+        "Stage": {
+            "AllowedValues": [
+                "staging",
+                "production"
+            ],
+            "Description": "Stage of this stack: staging or production",
+            "Type": "String"
+        },
+        "WriteBucket": {
+            "Description": "S3 bucket to write to",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "Ec2Instance": {
+            "Properties": {
+                "IamInstanceProfile": {
+                    "Ref": "InstanceProfile"
+                },
+                "ImageId": "ami-d36386aa",
+                "InstanceType": {
+                    "Ref": "InstanceType"
+                },
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "SecurityGroupIds": [
+                    {
+                        "Fn::GetAtt": [
+                            "simpleSg",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "SubnetId": {
+                    "Fn::FindInMap": [
+                        "AZMap",
+                        {
+                            "Ref": "AZName"
+                        },
+                        "SubnetId"
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "deep_learning_EC2"
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash -xe\n",
+                                "sudo easy_install3 pip \n",
+                                "sudo pip install awscli",
+                                "\n"
+                            ]
+                        ]
+                    }
+                }
+            },
+            "Type": "AWS::EC2::Instance"
+        },
+        "InstanceProfile": {
+            "Properties": {
+                "Roles": [
+                    {
+                        "Ref": "S3AccessRole"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::InstanceProfile"
+        },
+        "S3AccessRole": {
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "sts:AssumeRole"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "s3:DeleteObject",
+                                        "s3:PutObject",
+                                        "s3:GetBucketPolicy",
+                                        "s3:ListMultipartUploadParts",
+                                        "s3:AbortMultipartUpload"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        {
+                                            "Ref": "WriteBucket"
+                                        }
+                                    ],
+                                    "Sid": "WriteS3"
+                                },
+                                {
+                                    "Action": [
+                                        "s3:List*",
+                                        "s3:Get*"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        "arn:aws:s3:::*"
+                                    ],
+                                    "Sid": "ReadS3"
+                                }
+                            ]
+                        },
+                        "PolicyName": "DeepLearningStack-s3ReadPolicy"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "simpleSg": {
+            "Properties": {
+                "GroupDescription": "Simple Security Group: Enable SSH access via port 22",
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "22",
+                        "IpProtocol": "tcp",
+                        "ToPort": "22"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::SecurityGroup"
+        }
+    }
+}
