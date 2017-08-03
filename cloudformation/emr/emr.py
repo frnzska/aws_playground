@@ -187,7 +187,7 @@ stack['Capabilities'] = ['CAPABILITY_IAM']
 stack['Parameters'] = [ {'ParameterKey': 'KeyName', 'ParameterValue': cfg['KEY_NAME']},
                         {'ParameterKey': 'InstanceCount', 'ParameterValue': cfg['emr']['INSTANCE_COUNT']},
                         {'ParameterKey': 'WriteBucketArn', 'ParameterValue': cfg['emr']['WRITE_BUCKET_ARN']},
-                        {'ParameterKey': 'SubnetId', 'ParameterValue': cfg['emr']['SUBNET_ID']}
+                        {'ParameterKey': 'SubnetId', 'ParameterValue': cfg['SUBNET_WEST_1B']}
                        ]
 
 # create or delete stack with:
