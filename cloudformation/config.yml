@@ -1,4 +1,7 @@
 KEY_NAME: 'franzi'
+SUBNET_WEST_1A: 'subnet-613eee06'
+SUBNET_WEST_1B: 'subnet-32c41a7b'
+SUBNET_WEST_1C: 'subnet-b4b9a5ec'
 
 ec2_with_cloudwatch_agent:
   LOG_CONFIG: 's3://franziska-adler-staging/log_config'
@@ -6,4 +9,11 @@ ec2_with_cloudwatch_agent:
 emr:
   INSTANCE_COUNT: '2'
   WRITE_BUCKET_ARN: 'arn:aws:s3:::franziska-adler-emr*'
-  SUBNET_ID: 'subnet-32c41a7b'
+
+deepLearning_ec2:
+  EC2_STACK_NAME: 'DeepLearningStack'
+  STAGE: 'staging'
+  WRITE_BUCKET_ARN: 'arn:aws:s3:::franziska-adler-staging/*'
+  INSTANCE_TYPE: 'p2.xlarge'
+  AZ_NAME: 'eu-west-1c'
+
