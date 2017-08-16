@@ -8,6 +8,8 @@ from pkg_resources import resource_string
 cfg = yaml.load(resource_string('cloudformation', 'config.yml'))
 
 STACK_NAME = cfg['log_s3events_2_cloudwatch_lambda']['STACK_NAME']
+WATCH_BUCKET = cfg['log_s3events_2_cloudwatch_lambda']['WATCH_BUCKET']
+watch_bucket_arn = '{arn:aws:s3:::{WB}'.format(WB=WATCH_BUCKET)
 
 template = Template()
 description = 'Bucket monitoring'
@@ -122,7 +124,7 @@ stack_args = {
     'StackName': STACK_NAME,
     'TemplateBody': template.to_json(indent=4),
     'Parameters': [
-       { 'ParameterKey': 'WatchBucketArn', 'ParameterValue': cfg['log_s3events_2_cloudwatch_lambda']['WATCH_BUCKET'] }
+       { 'ParameterKey': 'WatchBucketArn', 'ParameterValue': watch_bucket_arn }
     ],
     'Tags': [ { 'Key': 'Stage', 'Value': 'staging'}],
     'Capabilities': ['CAPABILITY_IAM',],
@@ -147,7 +149,7 @@ def add_bucket_notification_on_s3_event(*, bucket, lambda_function, event):
     """
     s3_client = boto3.client('s3')
     lambda_client = boto3.client('lambda')
-    lambda_arn = lambda_client.get_function_configuration(FunctionName=lambda_function)['FunctionArn']
+    lambda_arn = lambda_client.get_function_configuration(FunctionName=cfg['log_s3events_2_cloudwatch_lambda']['FCT'])['FunctionArn']
     notification_config = {
         'LambdaFunctionConfigurations': [
             {
@@ -163,7 +165,7 @@ def add_bucket_notification_on_s3_event(*, bucket, lambda_function, event):
 
 # Step 1: Create stack
 # cfn.create_stack(**stack_args)
-# cfn.delete_stack(StackName=stack_args['StackName']
+# cfn.delete_stack(StackName=stack_args['StackName'])
 
 # Step 2: Enable Bucket Notification on eventype, done once
-# add_bucket_notification_on_s3_event(bucket= WATCH_BUCKET, lambda_function=LOG_LAMBDA_FCT, event='s3:ObjectCreated:Put')
+# add_bucket_notification_on_s3_event(bucket= WATCH_BUCKET, lambda_function=lambda_fct , event='s3:ObjectCreated:Put')
