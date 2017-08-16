@@ -143,7 +143,7 @@ cluster = template.add_resource(
         'Cluster',
         DependsOn=['simpleSg'],
         Name= 'ClusterWithSpark',
-        ReleaseLabel='emr-5.6.0',
+        ReleaseLabel='emr-5.7.0',
         JobFlowRole=Ref(emr_instance_profile),
         ServiceRole=Ref(emr_service_role ),
         Instances=emr.JobFlowInstancesConfig(

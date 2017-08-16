@@ -82,7 +82,7 @@
                     "Ref": "EMRInstanceProfile"
                 },
                 "Name": "ClusterWithSpark",
-                "ReleaseLabel": "emr-5.6.0",
+                "ReleaseLabel": "emr-5.7.0",
                 "ServiceRole": {
                     "Ref": "EMRServiceRole"
                 }
