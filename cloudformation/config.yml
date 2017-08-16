@@ -18,9 +18,9 @@ deepLearning_ec2:
   AZ_NAME: 'eu-west-1c'
 
 log_s3events_2_cloudwatch_lambda:
-  STACK_NAME: LogS3PutEventsToCloudwatch
-  FCT: log_s3events_2_cloudwatch
+  STACK_NAME: LogS3EventsToCloudwatch
+  FCT: LogS3Events2Cloudwatch
   DEPLOYMENT_BUCKET: franziska-adler-staging
-  S3_KEY: 'lambdas/log_s3events_2_cloudwatch.zip'
-  WATCH_BUCKET: arn:aws:s3:::franziska-adler-test-bucket
+  S3_KEY: lambdas/LogS3Events2Cloudwatch.zip
+  WATCH_BUCKET: franziska-adler-test-bucket
 
