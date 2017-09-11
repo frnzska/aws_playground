@@ -136,3 +136,91 @@ SecurityGroup = t.add_resource(
         ]
     )
 )
+
+instance_profile = t.add_resource(iam.InstanceProfile("InstanceProfile", Roles=[Ref(s3_access_role)]))
+
+
+ec2_instance = t.add_resource(ec2.Instance(
+    'Ec2Instance',
+    ImageId = "ami-d36386aa",
+    InstanceType = Ref(instance_type_param),
+    SecurityGroupIds=[GetAtt('simpleSg', 'GroupId')],
+    Tags=[{"Key" : "Name", "Value" : "deep_learning_EC2"}],
+    KeyName=Ref(key_name_param),
+    SubnetId=FindInMap('AZMap', Ref(az_param), 'SubnetId'),
+    IamInstanceProfile=Ref(instance_profile),
+    UserData = Base64(
+                     Join(
+                         '',
+                         ['#!/bin/bash -xe\n',
+                          'sudo easy_install3 pip \n',
+                          'sudo pip install awscli',
+                          '\n',
+                          ])
+               )
+))
+
+
+t.add_output([
+    Output('AvailabilityZone',
+           Value=GetAtt(ec2_instance, 'AvailabilityZone'),
+           Description='AvailabilityZone of the EC2 instance'
+           )
+])
+
+
+
+
+stack = {
+    'StackName': STACK_NAME,
+    'TemplateBody': t.to_json(indent=4),
+    'Parameters': [
+        {
+            'ParameterKey': 'Stage',
+            'ParameterValue': cfg['deepLearning_ec2']['STAGE'],
+            'UsePreviousValue': False
+        },
+        {
+            'ParameterKey': 'InstanceType',
+            'ParameterValue': cfg['deepLearning_ec2']['INSTANCE_TYPE']
+        },
+        {
+            'ParameterKey': 'AZName',
+            'ParameterValue': cfg['deepLearning_ec2']['AZ_NAME']
+        },
+        {
+            'ParameterKey': 'KeyName',
+            'ParameterValue': cfg['KEY_NAME']
+        },
+        {
+            'ParameterKey': 'WriteBucket',
+            'ParameterValue': cfg['deepLearning_ec2']['WRITE_BUCKET_ARN']
+        }
+    ],
+    'Tags': [
+        {
+            'Key': 'Stage',
+            'Value': cfg['deepLearning_ec2']['STAGE']
+        },
+        {
+            'Key': 'Purpose',
+            'Value': 'DeepLearningEC2'
+        }
+    ],
+    'Capabilities': [
+        'CAPABILITY_IAM',
+    ],
+}
+
+
+template_json = t.to_json(indent=4)
+print(template_json)
+cfn = boto3.client('cloudformation')
+cfn.validate_template(TemplateBody=template_json)
+
+# create or delete stack with:
+#cfn.create_stack(**stack)
+#cfn.delete_stack(StackName=stack['StackName'])
+
+
+# ssh -A -t -t bastion ssh ec2-user@ip-10-100-170-110.eu-west-1.compute.internal
