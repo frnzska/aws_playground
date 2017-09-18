@@ -1,0 +1,5 @@
+language: python
+
+sudo: false
+
+install: true # skip installation step, do later eg from yml or sh file
