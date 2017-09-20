@@ -19,6 +19,8 @@ deploy:
     region: eu-west-1
     upload-dir: staging/aws_playground # specific folder on s3 for uploads
     #local_dir: cloudformation # specified dir to be uploaded
+    on:
+      all_branches: true
   - env: production
     provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
