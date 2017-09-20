@@ -19,3 +19,4 @@ deploy:
   upload-dir: aws_playground # specific folder on s3 for uploads
   #local_dir: cloudformation # dir to be uploaded
 
+
