@@ -10,13 +10,23 @@ script:
   - pytest
 
 deploy:
-  provider: s3
-  access_key_id: $AWS_ACCESS_KEY_ID
-  secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: $AWS_BUCKET
-  skip_cleanup: true
-  region: eu-west-1
-  upload-dir: aws_playground # specific folder on s3 for uploads
-  #local_dir: cloudformation # dir to be uploaded
-
+  - env: staging
+    provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: $AWS_BUCKET
+    skip_cleanup: true
+    region: eu-west-1
+    upload-dir: staging/aws_playground # specific folder on s3 for uploads
+    #local_dir: cloudformation # specified dir to be uploaded
+  - env: production
+    provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: $AWS_BUCKET
+    skip_cleanup: true
+    region: eu-west-1
+    upload-dir: production/aws_playground
+    on:
+      branch: master
 
