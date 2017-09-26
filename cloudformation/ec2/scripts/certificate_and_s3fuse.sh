@@ -1,6 +1,12 @@
 #!/bin/bash
 set -x -e
 
+cd /home/ec2-user/
+mkdir ssl
+cd ssl
+sudo openssl req -x509 -nodes -days 10 -newkey rsa:1024 -keyout "cert.key" -out "cert.pem" -batch
+
+
 sudo yum update -y
 sudo yum install -y automake fuse fuse-devel libxml2-devel
 cd /mnt
