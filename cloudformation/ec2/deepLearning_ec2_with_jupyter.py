@@ -225,9 +225,5 @@ cfn = boto3.client('cloudformation')
 cfn.validate_template(TemplateBody=template_json)
 
 # create or delete stack with:
-cfn.create_stack(**stack)
+# cfn.create_stack(**stack)
 # cfn.delete_stack(StackName=stack['StackName'])
-
-### set the connection with:
-# ssh -i ~/mykeypair.pem -L 8157:127.0.0.1:8888 ec2-user@ec2-###-##-##-###.compute-1.amazonaws.com (public dns)
-# available https://127.0.0.1:8157
