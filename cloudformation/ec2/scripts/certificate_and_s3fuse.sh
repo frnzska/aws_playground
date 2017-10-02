@@ -2,13 +2,11 @@
 set -x -e
 
 cd /home/ec2-user/
-mkdir ssl
-cd ssl
+mkdir certs
+cd certs
 sudo openssl req -x509 -nodes -days 10 -newkey rsa:1024 -keyout "cert.key" -out "cert.pem" -batch
 
-
-sudo yum update -y
-sudo yum install -y automake fuse fuse-devel libxml2-devel
+yum install -y automake fuse fuse-devel libxml2-devel
 cd /mnt
 
 git clone https://github.com/s3fs-fuse/s3fs-fuse.git
