@@ -13,8 +13,8 @@ emr:
 deepLearning_ec2:
   EC2_STACK_NAME: 'DeepLearningStack'
   STAGE: 'staging'
-  WRITE_BUCKET_ARN: 'arn:aws:s3:::franziska-adler-staging/*'
-  INSTANCE_TYPE: 'p2.xlarge'
+  WRITE_BUCKET_ARN: 'arn:aws:s3:::franziska-adler-general/*'
+  INSTANCE_TYPE: 't2.nano'
   AZ_NAME: 'eu-west-1c'
 
 log_s3events_2_cloudwatch_lambda:
