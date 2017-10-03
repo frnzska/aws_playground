@@ -10,6 +10,9 @@ SUBNET_WEST_1A = cfg['SUBNET_WEST_1A']
 SUBNET_WEST_1B = cfg['SUBNET_WEST_1B']
 SUBNET_WEST_1C = cfg['SUBNET_WEST_1C']
 
+S3_KEY_JUPYTER_CONF = cfg['deepLearning_ec2']['S3_KEY_JUPYTER_CONF']
+S3_KEY_INSTALL = cfg['deepLearning_ec2']['S3_KEY_INSTALL']
+
 sep= '-'
 STACK_NAME = sep.join(['Jupyter', cfg['deepLearning_ec2']['EC2_STACK_NAME'], cfg['deepLearning_ec2']['STAGE']])
 
@@ -156,8 +159,8 @@ ec2_instance = t.add_resource(ec2.Instance(
                           'cd /home/ec2-user \n',
                           'mkdir -p /mnt/jupyter-notebooks \n',
                           'chmod 777 /mnt/jupyter-notebooks \n',
-                          'su ec2-user -c "aws s3 cp s3://franziska-adler-deployments/production/aws_playground/cloudformation/ec2/scripts/jupyter_notebook_config.py /home/ec2-user/.jupyter/jupyter_notebook_config.py" \n',
-                          'su ec2-user -c "aws s3 cp s3://franziska-adler-deployments/production/aws_playground/cloudformation/ec2/scripts/certificate_and_s3fuse.sh /home/ec2-user/certificate_and_s3fuse.sh" \n',
+                          'su ec2-user -c "aws s3 cp ', S3_KEY_JUPYTER_CONF, ' /home/ec2-user/.jupyter/jupyter_notebook_config.py" \n',
+                          'su ec2-user -c "aws s3 cp ', S3_KEY_INSTALL, ' /home/ec2-user/certificate_and_s3fuse.sh" \n',
                           'sh /home/ec2-user/certificate_and_s3fuse.sh  \n',
                           'cd /mnt/jupyter-notebooks \n',
                           'su ec2-user -c "jupyter notebook" \n',
@@ -227,3 +230,4 @@ cfn.validate_template(TemplateBody=template_json)
 # create or delete stack with:
 # cfn.create_stack(**stack)
 # cfn.delete_stack(StackName=stack['StackName'])
+
