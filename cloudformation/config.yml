@@ -26,3 +26,6 @@ log_s3events_2_cloudwatch_lambda:
   S3_KEY: lambdas/LogS3Events2Cloudwatch.zip
   WATCH_BUCKET: franziska-adler-test-bucket
 
+statemachine_example:
+  STACK_NAME: StateMachineExampleStack
+
