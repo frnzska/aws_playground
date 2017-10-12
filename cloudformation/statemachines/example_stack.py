@@ -106,14 +106,21 @@ lambda_fct = template.add_resource(
         MemorySize=128
     )
 )
+
 ### state machine ###
 #defintion_str = json.dumps(yaml.load(open('cloudformation/statemachines/dfn_str.yml')))
 resource = GetAtt('ExampleFct', 'Arn')
 lambda_fct_arn = 'arn:aws:lambda:eu-west-1:369667221252:function:' + cfg['statemachine_example']['FCT']
 definition_str = json.dumps({
-  "StartAt": "CertainState",
+  "StartAt": "A",
   "States": {
-    "HelloWorld": {
+      "A": {
+          "Type": "Task",
+          "Resource": lambda_fct_arn,
+          "ResultPath": "$.who",
+          "Next": "B"
+      },
+    "B": {
       "Type": "Task",
       "Resource": lambda_fct_arn,
       "End": True
@@ -147,5 +154,7 @@ print(t_json)
 cfn.validate_template(TemplateBody=t_json)
 
 # create or delete stack with:
-cfn.create_stack(**stack_args)
+# cfn.create_stack(**stack_args)
 #cfn.delete_stack(StackName=stack['StackName'])
+
+# start execution, change first input from 'comment' to 'who' (to match event date : event['who'] in lambda)
