@@ -28,4 +28,8 @@ log_s3events_2_cloudwatch_lambda:
 
 statemachine_example:
   STACK_NAME: StateMachineExampleStack
+  FCT: MyNewStateMachineLambdaFct
+  DEPLOYMENT_BUCKET: franziska-adler-staging
+  S3_KEY: lambdas/StatemachineExampleFct.zip
+
 
