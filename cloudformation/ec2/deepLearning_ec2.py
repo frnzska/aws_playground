@@ -1,7 +1,8 @@
 from troposphere import ec2, Ref, Template, iam, Parameter, Base64, Join, FindInMap, Output, GetAtt
 import boto3
 from awacs import s3
-from awacs.aws import Statement, Allow, Action, Policy
+from awacs.aws import Statement, Allow, Action, Policy, Principal
+from awacs.sts import AssumeRole
 import ruamel_yaml as yaml
 from pkg_resources import resource_string
 cfg = yaml.load(resource_string('cloudformation', 'config.yml'))
@@ -58,17 +59,15 @@ s3_access_policy = iam.Policy(
 
 s3_access_role = t.add_resource(iam.Role(
     "S3AccessRole",
-    AssumeRolePolicyDocument={
-        'Statement': [{
-            'Effect': 'Allow',
-            'Principal': {
-                'Service': [
-                    'ec2.amazonaws.com'
-                ]
-            },
-            'Action': ['sts:AssumeRole']
-        }]
-    },
+    AssumeRolePolicyDocument=Policy(
+        Statement=[
+            Statement(
+                Effect=Allow,
+                Action=[AssumeRole],
+                Principal=Principal("Service", ["ec2.amazonaws.com"])
+            )
+        ]
+    ),
     Policies=[s3_access_policy]
 ))
 
@@ -219,7 +218,7 @@ cfn = boto3.client('cloudformation')
 cfn.validate_template(TemplateBody=template_json)
 
 # create or delete stack with:
-#cfn.create_stack(**stack)
+cfn.create_stack(**stack)
 #cfn.delete_stack(StackName=stack['StackName'])
 
 
