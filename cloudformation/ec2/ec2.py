@@ -21,13 +21,10 @@ mySecurityGroup = template.add_resource(
     ec2.SecurityGroup(
         'simpleSg',
         GroupDescription='Simple Security Group: Enable SSH access via port 22',
-        SecurityGroupIngress=[
-            {
-                'IpProtocol': 'tcp',
-                'CidrIp': '0.0.0.0/0',
-                'FromPort': '22',
-                'ToPort': '22'
-            }
+        SecurityGroupIngress=[ ec2.SecurityGroupRule( IpProtocol='tcp',
+                                                      FromPort='22',
+                                                      ToPort='22',
+                                                      CidrIp='0.0.0.0/0')
         ]
     )
 )

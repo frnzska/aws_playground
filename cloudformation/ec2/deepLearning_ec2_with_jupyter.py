@@ -129,14 +129,11 @@ SecurityGroup = t.add_resource(
     ec2.SecurityGroup(
         'simpleSg',
         GroupDescription='Simple Security Group: Enable SSH access via port 22',
-        SecurityGroupIngress=[
-            {
-                'IpProtocol': 'tcp',
-                'CidrIp': '0.0.0.0/0',
-                'FromPort': '22',
-                'ToPort': '22'
-            }
-        ]
+        SecurityGroupIngress=[ec2.SecurityGroupRule(IpProtocol='tcp',
+                                                    FromPort='22',
+                                                    ToPort='22',
+                                                    CidrIp='0.0.0.0/0')
+                                        ]
     )
 )
 
@@ -231,3 +228,6 @@ cfn.validate_template(TemplateBody=template_json)
 # cfn.create_stack(**stack)
 # cfn.delete_stack(StackName=stack['StackName'])
 
+### set the connection with:
+# ssh -i ~/mykeypair.pem -L 8157:127.0.0.1:8888 ec2-user@ec2-###-##-##-###.compute-1.amazonaws.com (public dns)
+# available https://127.0.0.1:8157
