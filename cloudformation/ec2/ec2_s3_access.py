@@ -1,5 +1,5 @@
 from troposphere import Template, iam, Ref, Parameter, ec2
-from awacs.aws import Allow, Policy, Principal, Statement
+from awacs.aws import Allow, Policy, Principal, Statement, Action
 from awacs.sts import AssumeRole
 import ruamel_yaml as yaml
 from pkg_resources import resource_string
@@ -23,17 +23,21 @@ key_name_param = t.add_parameter(
 
 policy = iam.Policy(
     PolicyName='S3ReadPolicy',
-    PolicyDocument={
-        'Statement': [
-            {
-                'Sid': 'S3Access',
-                'Effect': 'Allow',
-                'Action': ['s3:List*', 's3:Get*'],
-                'Resource': 'arn:aws:s3:::*'
-            }
+    PolicyDocument= Policy(
+        Statement=[
+            Statement(
+                Sid='S3Access',
+                Effect=Allow,
+                Action=[
+                    Action('s3', 'List*'),
+                    Action('s3', 'Get*'),
+                ],
+                Resource=['arn:aws:s3:::*']
+            )
         ]
-    }
+    )
 )
+
 
 S3role = t.add_resource(iam.Role(
     'S3Role',
@@ -84,7 +88,7 @@ stack['TemplateBody'] = template_json
 stack['Capabilities'] = ['CAPABILITY_NAMED_IAM']
 stack['Parameters'] = [{ 'ParameterKey': 'KeyName', 'ParameterValue': cfg['KEY_NAME'] }]
 
-#cfn.create_stack(**stack)
+cfn.create_stack(**stack)
 #cfn.delete_stack(StackName=stack['StackName'])
 
 
