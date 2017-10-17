@@ -148,15 +148,6 @@ ec2_instance = t.add_resource(ec2.Instance(
     KeyName=Ref(key_name_param),
     SubnetId=FindInMap('AZMap', Ref(az_param), 'SubnetId'),
     IamInstanceProfile=Ref(instance_profile),
-    UserData = Base64(
-                     Join(
-                         '',
-                         ['#!/bin/bash -xe\n',
-                          'sudo easy_install3 pip \n',
-                          'sudo pip install awscli',
-                          '\n',
-                          ])
-               )
 ))
 
 
