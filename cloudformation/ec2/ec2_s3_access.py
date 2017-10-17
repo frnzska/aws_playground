@@ -54,10 +54,11 @@ instance_profile = t.add_resource(iam.InstanceProfile("InstanceProfile", Roles=[
 
 mySecurityGroup = ec2.SecurityGroup('simpleSG')
 mySecurityGroup.GroupDescription = 'shh traffic allowed'
-mySecurityGroup.SecurityGroupIngress = [{ 'IpProtocol': 'tcp',
-                                          'CidrIp': '0.0.0.0/0',
-                                          'FromPort': '22',
-                                          'ToPort': '22'}]
+mySecurityGroup.SecurityGroupIngress = [ec2.SecurityGroupRule(IpProtocol='tcp',
+                                                              FromPort='22',
+                                                              ToPort='22',
+                                                              CidrIp='0.0.0.0/0') # from everywhere
+                                        ]
 t.add_resource(mySecurityGroup)
 
 
