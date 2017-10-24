@@ -1,34 +1,19 @@
 language: python
-python:
-  - "3.6"
 
+python: '3.4'
 sudo: false
 
-install: true # skip installation step, do later eg from yml or sh file
+# We don't care about Travis' python versions, we install conda anyway
+env:
+  global:
+    - AWS_DEFAULT_REGION=eu-west-1
+
+
+install:
+  - pip install awscli
 
 script:
-  - pytest
+  - return 0
 
-deploy:
-  - env: staging
-    provider: s3
-    access_key_id: $AWS_ACCESS_KEY_ID
-    secret_access_key: $AWS_SECRET_ACCESS_KEY
-    bucket: $AWS_BUCKET
-    skip_cleanup: true
-    region: eu-west-1
-    upload-dir: staging/aws_playground # specific folder on s3 for uploads
-    #local_dir: cloudformation # specified dir to be uploaded
-    on:
-      all_branches: true
-  - env: production
-    provider: s3
-    access_key_id: $AWS_ACCESS_KEY_ID
-    secret_access_key: $AWS_SECRET_ACCESS_KEY
-    bucket: $AWS_BUCKET
-    skip_cleanup: true
-    region: eu-west-1
-    upload-dir: production/aws_playground
-    on:
-      branch: master
-
+notifications:
+  email: true
