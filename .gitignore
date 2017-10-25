@@ -6,3 +6,30 @@
 .DS_Store?
 ._*
 .Trashes
+
+### IPythonNotebook template
+# Temporary data
+.ipynb_checkpoints/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Distribution / packaging
+env/
+.eggs/
+lib/
+lib64/
+sdist/
+*.egg-info/
+.installed.cfg
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Test cache
+.cache/
