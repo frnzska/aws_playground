@@ -103,7 +103,8 @@ lambda_fct = template.add_resource(
         ),
         Runtime='python3.6',
         Timeout='30',
-        MemorySize=128
+        MemorySize=128,
+        Environment = awslambda.Environment('LambdaVars', Variables={'who': STACK_NAME})
     )
 )
 
@@ -155,6 +156,5 @@ cfn.validate_template(TemplateBody=t_json)
 
 # create or delete stack with:
 # cfn.create_stack(**stack_args)
-#cfn.delete_stack(StackName=stack['StackName'])
+# cfn.delete_stack(StackName=stack_args['StackName'])
 
-# start execution, change first input from 'comment' to 'who' (to match event date : event['who'] in lambda)
