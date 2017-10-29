@@ -14,7 +14,7 @@ deepLearning_ec2:
   EC2_STACK_NAME: 'DeepLearningStack'
   STAGE: 'staging'
   WRITE_BUCKET_ARN: 'arn:aws:s3:::franziska-adler-general/*'
-  INSTANCE_TYPE: 't2.nano'
+  INSTANCE_TYPE: 't2.nano' # for testing
   AZ_NAME: 'eu-west-1c'
   S3_KEY_JUPYTER_CONF: s3://franziska-adler-deployments/production/aws_playground/cloudformation/ec2/scripts/jupyter_notebook_config.py
   S3_KEY_INSTALL: s3://franziska-adler-deployments/production/aws_playground/cloudformation/ec2/scripts/certificate_and_s3fuse.sh
@@ -32,4 +32,9 @@ statemachine_example:
   DEPLOYMENT_BUCKET: franziska-adler-staging
   S3_KEY: lambdas/StatemachineExampleFct.zip
 
+simple_ETL_state_machine:
+  STACK_NAME: StateMachineSimpleETLStack
+  DEPLOYMENT_BUCKET: franziska-adler-staging
+  FCT_1: validate
+  S3_KEY_1: lambdas/SimpleETLStatemachine/validate.zip
 
