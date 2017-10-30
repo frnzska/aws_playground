@@ -37,4 +37,5 @@ simple_ETL_state_machine:
   DEPLOYMENT_BUCKET: franziska-adler-staging
   FCT_1: validate
   S3_KEY_1: lambdas/SimpleETLStatemachine/validate.zip
-
+  FCT_2: enrich
+  S3_KEY_2: lambdas/SimpleETLStatemachine/enrich.zip
