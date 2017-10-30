@@ -103,8 +103,7 @@ lambda_fct = template.add_resource(
         ),
         Runtime='python3.6',
         Timeout='30',
-        MemorySize=128,
-        Environment = awslambda.Environment('LambdaVars', Variables={'who': STACK_NAME})
+        MemorySize=128
     )
 )
 
