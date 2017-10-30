@@ -91,6 +91,24 @@ state_execution_role = template.add_resource(iam.Role(
 
 ))
 
+### Lambda fct ###
+validate_fct = template.add_resource(
+    awslambda.Function(
+        'ValidateFct',
+        FunctionName=FUNCTION_NAME_1,
+        Description='Lambda 1 for Simple ETL Statemachine',
+        Handler='validate.lambda',
+        Role=GetAtt('LambdaExecutionRole', 'Arn'),
+        Code=awslambda.Code(
+            S3Bucket=DEPLOYMENT_BUCKET,
+            S3Key=S3_KEY_1,
+        ),
+        Runtime='python3.6',
+        Timeout='30',
+        MemorySize=128
+    )
+)
+
 ### build stack
 
 t_json = template.to_json(indent=4)
