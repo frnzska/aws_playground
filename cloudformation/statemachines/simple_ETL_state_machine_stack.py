@@ -16,7 +16,8 @@ STACK_NAME = cfg['simple_ETL_state_machine']['STACK_NAME']
 FUNCTION_NAME_1 = cfg['simple_ETL_state_machine']['FCT_1']
 DEPLOYMENT_BUCKET = cfg['simple_ETL_state_machine']['DEPLOYMENT_BUCKET']
 S3_KEY_1 = cfg['simple_ETL_state_machine']['S3_KEY_1']
-#FUNCTION_NAME_2 = cfg['simple_ETL_state_machine']['FCT_2']
+FUNCTION_NAME_2 = cfg['simple_ETL_state_machine']['FCT_2']
+S3_KEY_2 = cfg['simple_ETL_state_machine']['S3_KEY_2']
 
 template = Template()
 description = 'Template for simple ETL state machine'
@@ -97,7 +98,7 @@ validate_fct = template.add_resource(
         'ValidateFct',
         FunctionName=FUNCTION_NAME_1,
         Description='Lambda 1 for Simple ETL Statemachine',
-        Handler='validate.lambda',
+        Handler='validate.lambda_handler',
         Role=GetAtt('LambdaExecutionRole', 'Arn'),
         Code=awslambda.Code(
             S3Bucket=DEPLOYMENT_BUCKET,
@@ -109,8 +110,51 @@ validate_fct = template.add_resource(
     )
 )
 
-### build stack
+enrich_fct = template.add_resource(
+    awslambda.Function(
+        'EnrichFct',
+        FunctionName=FUNCTION_NAME_2,
+        Description='Enrich fct for Simple ETL Statemachine',
+        Handler='enrich.lambda_handler',
+        Role=GetAtt('LambdaExecutionRole', 'Arn'),
+        Code=awslambda.Code(
+            S3Bucket=DEPLOYMENT_BUCKET,
+            S3Key=S3_KEY_2,
+        ),
+        Runtime='python3.6',
+        Timeout='30',
+        MemorySize=128
+    )
+)
 
+
+definition_str = json.dumps({
+  "StartAt": "A",
+  "States": {
+      "Validate": {
+          "Type": "Task",
+          "Resource": ':'.format(['arn:aws:lambda:eu-west-1:369667221252:function', FUNCTION_NAME_1]),
+          #"ResultPath": "$.",
+          "Next": "B"
+      },
+    "Enrich": {
+      "Type": "Task",
+      "Resource": ':'.format(['arn:aws:lambda:eu-west-1:369667221252:function', FUNCTION_NAME_2]),
+      "End": True
+    }
+  }
+})
+
+statemachine = template.add_resource(
+    stepfunctions.StateMachine(
+        'ExampleStateMachine',
+        DependsOn= 'ExampleFct',
+        DefinitionString = definition_str,
+        RoleArn = GetAtt('StateExecutionRole', 'Arn')
+    )
+)
+
+### build stack
 t_json = template.to_json(indent=4)
 
 # ----- Stack Args ----- #
