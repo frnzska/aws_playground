@@ -1,6 +1,7 @@
 import json
 import logging
 import jsonschema
+import datetime as dt
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -27,4 +28,6 @@ def lambda_handler(event, context):
         return event
     except jsonschema.ValidationError:
         logger.exception("Invalid event")
-        return None
+        today = dt.datetime.now().strftime('%Y/%m/%d')
+        event['s3_key'] = '/'.format(['Unvalid', today])
+        return event
