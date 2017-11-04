@@ -108,7 +108,6 @@ lambda_fct = template.add_resource(
 )
 
 ### state machine ###
-#defintion_str = json.dumps(yaml.load(open('cloudformation/statemachines/dfn_str.yml')))
 resource = GetAtt('ExampleFct', 'Arn')
 lambda_fct_arn = 'arn:aws:lambda:eu-west-1:369667221252:function:' + cfg['statemachine_example']['FCT']
 definition_str = json.dumps({
