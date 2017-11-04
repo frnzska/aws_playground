@@ -8,7 +8,7 @@ logger.setLevel(logging.INFO)
 
 s3 = boto3.client('s3')
 def lambda_handler(event, context):
-    """Saves file to s3"""
+    """Saves events to s3"""
     logger.info(json.dumps(event))
     bucket = os.environ['bucket']
     s3_key = event['s3_key']

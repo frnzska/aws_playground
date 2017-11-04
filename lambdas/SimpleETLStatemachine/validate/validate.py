@@ -24,10 +24,19 @@ json_validation_schema = {
 def lambda_handler(event, context):
     logger.info(json.dumps(event))
     try:
-        jsonschema.validate(event, json_validation_schema)
+        jsonschema.validate(event['record'], json_validation_schema)
         return event
     except jsonschema.ValidationError:
         logger.exception("Invalid event")
         today = dt.datetime.now().strftime('%Y/%m/%d')
-        event['s3_key'] = '/'.format(['Unvalid', today])
+        event['s3_key'] = '/'.format(['Invalid', today])
+        logger.info(json.dumps(event))
         return event
+
+e = {
+  "record": {
+    "name": "user:created",
+    "version": "2"
+  }
+}
+print(lambda_handler(e, ''))
