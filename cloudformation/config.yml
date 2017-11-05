@@ -35,7 +35,9 @@ statemachine_example:
 simple_ETL_state_machine:
   STACK_NAME: StateMachineSimpleETLStack
   DEPLOYMENT_BUCKET: franziska-adler-staging
-  FCT_1: validate
-  S3_KEY_1: lambdas/SimpleETLStatemachine/validate.zip
-  FCT_2: enrich
-  S3_KEY_2: lambdas/SimpleETLStatemachine/enrich.zip
+  FCT_VALIDATE: validate
+  S3_KEY_VALIDATE: lambdas/SimpleETLStatemachine/validate.zip
+  FCT_ENRICH: enrich
+  S3_KEY_ENRICH: lambdas/SimpleETLStatemachine/enrich.zip
+  FCT_STORE: store
+  S3_KEY_STORE: lambdas/SimpleETLStatemachine/store.zip
