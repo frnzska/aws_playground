@@ -25,6 +25,7 @@ dependencies:
 - xz=5.2.2=1
 - yaml=0.1.6=0
 - zlib=1.2.8=3
+- jsonschema=2.6.0
 - pip:
   - awacs==0.6.2
   - awscli==1.11.83
