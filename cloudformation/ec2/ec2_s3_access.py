@@ -88,7 +88,7 @@ stack['TemplateBody'] = template_json
 stack['Capabilities'] = ['CAPABILITY_NAMED_IAM']
 stack['Parameters'] = [{ 'ParameterKey': 'KeyName', 'ParameterValue': cfg['KEY_NAME'] }]
 
-cfn.create_stack(**stack)
+#cfn.create_stack(**stack)
 #cfn.delete_stack(StackName=stack['StackName'])
 
 
