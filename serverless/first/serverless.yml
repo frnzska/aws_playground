@@ -1,0 +1,14 @@
+service: first
+
+provider:
+  name: aws
+  runtime: python3.6
+  region: eu-west-1
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: users/create
+          method: get
