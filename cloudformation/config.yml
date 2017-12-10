@@ -41,3 +41,6 @@ simple_ETL_state_machine:
   S3_KEY_ENRICH: lambdas/SimpleETLStatemachine/enrich.zip
   FCT_STORE: store
   S3_KEY_STORE: lambdas/SimpleETLStatemachine/store.zip
+
+redshift:
+  BUCKET_ARN: arn:aws:s3:::franziska-adler-redshift*
