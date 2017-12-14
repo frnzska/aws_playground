@@ -1,0 +1,6 @@
+{
+  "entries": [
+    {"url":"s3://data/mytestdata1.json","mandatory":true},
+    {"url":"s3://data/mytestdata2.json","mandatory":true}
+   ]
+}
