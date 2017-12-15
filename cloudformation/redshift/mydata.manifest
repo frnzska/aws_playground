@@ -1,6 +1,6 @@
 {
   "entries": [
-    {"url":"s3://franziska-adler-redshift/data/mytestdata1.json","mandatory":true},
-    {"url":"s3://franziska-adler-redshift/data/mytestdata2.json","mandatory":true}
+    {"url":"s3://franziska-adler-redshift/data/mytestdata1.csv","mandatory":true},
+    {"url":"s3://franziska-adler-redshift/data/mytestdata2.csv","mandatory":true}
    ]
 }

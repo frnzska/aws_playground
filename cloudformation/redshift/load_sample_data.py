@@ -40,7 +40,7 @@ def create_table(*,schema_path, conn):
 
 
 def copy_from_s3(*, table_name, s3_manifest, conn):
-    query = f"copy {table_name} from '{s3_manifest}' iam_role 'arn:aws:iam::369667221252:role/RedshiftIAMRole' REGION 'eu-west-1' manifest;"
+    query = f"copy {table_name} from '{s3_manifest}' iam_role 'arn:aws:iam::369667221252:role/RedshiftIAMRole' csv manifest;"
     cursor = conn.cursor()
     cursor.execute(query)
 
