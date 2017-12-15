@@ -10,7 +10,7 @@ cfg = yaml.load(resource_string('cloudformation', 'config.yml'))
 template = Template()
 template.add_description('Redshift single-node stack')
 
-STACK_NAME = 'Redshift-Stack'
+STACK_NAME = 'Redshift-Stack-staging'
 
 # --- Iam --- #
 
@@ -23,8 +23,21 @@ redshift_bucket_param = template.add_parameter(
     ))
 
 
-
-
+redshift_policy = iam.Policy(
+    PolicyName='GrantRedshift',
+    PolicyDocument={
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "redshift:*",
+                    "iam:PassRole"
+                ],
+                "Resource": "*",
+            }
+        ]
+    })
 
 s3_policies = iam.Policy(
     PolicyName='S3Policies',
@@ -37,7 +50,7 @@ s3_policies = iam.Policy(
                     Action('s3', 'List*'),
                     Action('s3', 'Get*'),
                 ],
-                Resource=['arn:aws:s3:::*']
+                Resource=['*']
             ),
             Statement(
                 Sid='S3WriteAccess',
@@ -56,8 +69,8 @@ s3_policies = iam.Policy(
 
 iam_role = template.add_resource(
     iam.Role(
-        'S3Role',
-        RoleName="S3role",
+        'RedshiftIAMRole',
+        RoleName="RedshiftIAMRole",
         AssumeRolePolicyDocument=Policy(
             Statement=[
                 Statement(
@@ -67,7 +80,7 @@ iam_role = template.add_resource(
                 )
             ]
         ),
-        Policies=[s3_policies]
+        Policies=[s3_policies, redshift_policy]
     )
 )
 
@@ -76,7 +89,7 @@ iam_role = template.add_resource(
 single_node_cluster = template.add_resource(
     redshift.Cluster(
         'Cluster',
-        DependsOn='S3Role',
+        DependsOn='RedshiftIAMRole',
         DBName = "dwh",
         MasterUsername = 'franzi',
         MasterUserPassword = 'Yo!Something1',
@@ -103,7 +116,7 @@ stack['Capabilities'] =  ['CAPABILITY_NAMED_IAM']
 stack['Parameters'] = [ {'ParameterKey': 'BucketArn', 'ParameterValue': cfg['redshift']['BUCKET_ARN']}]
 
 # create or delete stack with:
-# cfn.create_stack(**stack)
-# cfn.delete_stack(StackName=stack['StackName'])
+#cfn.create_stack(**stack)
+#cfn.delete_stack(StackName=stack['StackName'])
 
 # test with client: select * from information_schema.tables;
