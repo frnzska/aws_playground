@@ -40,7 +40,7 @@ def create_table(*,schema_path, conn):
 
 
 def copy_from_s3(*, table_name, s3_manifest, conn):
-    query = f"copy {table_name} from '{s3_manifest}' iam_role 'arn:aws:iam::369667221252:role/RedshiftIAMRole' csv manifest;"
+    query = f"copy {table_name} from '{s3_manifest}' iam_role 'arn:aws:iam::369667221252:role/RedshiftIAMRole' delimiter ',' csv manifest;"
     cursor = conn.cursor()
     cursor.execute(query)
 
@@ -48,10 +48,10 @@ def copy_from_s3(*, table_name, s3_manifest, conn):
 
 conn = db_connection()
 #create_table(schema_path='cloudformation/redshift/my_table_schema.sql', conn=conn)
-copy_from_s3(table_name='my_test_data',
-             s3_manifest='s3://franziska-adler-deployments/production/aws_playground/cloudformation/redshift/mydata.manifest',
-             conn=conn)
-
+#copy_from_s3(table_name='my_test_data',
+#             s3_manifest='s3://franziska-adler-deployments/production/aws_playground/cloudformation/redshift/mydata.manifest',
+#             conn=conn)
+#
 example_query = "select * from information_schema.tables"
 res = query(query=example_query,conn=conn)
 print(res)
