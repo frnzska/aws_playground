@@ -1,0 +1,22 @@
+{
+    "myTestTable": [
+        {
+            "PutRequest": {
+                "Item": {
+                    "id":{"N":"1"},
+                    "user_name": {"S":"Tom"},
+                    "display_name":{"S":"Tom2017"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id":{"N":"2"},
+                    "user_name": {"S":"Sue"},
+                    "display_name":{"S":"SunnySue"}
+                }
+            }
+        }
+    ]
+}
