@@ -24,3 +24,4 @@ def get_cluster_id(name='ClusterWithSparkAndSteps'):
 id = get_cluster_id()
 if id:
     response = emr.add_job_flow_steps(JobFlowId=id, Steps=[step_definition])
+

@@ -1,3 +1,6 @@
+"""
+EMR with step. Step is generated with boto3 and assigned in bootstrap script instead of defining it in stack
+"""
 import boto3
 from awacs import s3
 from awacs.aws import Statement, Allow, Policy, Action
@@ -54,7 +57,7 @@ emr_cluster_policy = Policy(
             Action=[Action("elasticmapreduce", "List*"),
                     Action("elasticmapreduce", "AddJobFlowSteps")
                     ],
-            Resource=["*"]#TODO restrict
+            Resource=['*']
         )
     ]
 )
@@ -157,7 +160,9 @@ mySecurityGroup = template.add_resource(
 cluster = template.add_resource(
     emr.Cluster(
         'Cluster',
+
         DependsOn=['simpleSg'],
+        VisibleToAllUsers=True,
         Name= 'ClusterWithSparkAndSteps',
         ReleaseLabel='emr-5.11.0',
         JobFlowRole=Ref(emr_instance_profile),
@@ -248,7 +253,7 @@ stack['Parameters'] = [ {'ParameterKey': 'KeyName', 'ParameterValue': cfg['KEY_N
                        ]
 
 # create or delete stack with:
-cfn.create_stack(**stack)
+# cfn.create_stack(**stack)
 # cfn.delete_stack(StackName=stack['StackName'])
 
 # execute spark app in test.py with
