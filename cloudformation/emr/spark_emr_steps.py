@@ -46,6 +46,20 @@ s3_policy_doc = Policy(
     ]
 )
 
+emr_cluster_policy = Policy(
+    Statement=[
+        Statement(
+            Sid='ClusterAccess',
+            Effect=Allow,
+            Action=[Action("elasticmapreduce", "List*"),
+                    Action("elasticmapreduce", "AddJobFlowSteps")
+                    ],
+            Resource=["*"]#TODO restrict
+        )
+    ]
+)
+
+
 emr_service_role = template.add_resource(
     iam.Role(
         'EMRServiceRole',
@@ -85,6 +99,10 @@ emr_job_flow_role = template.add_resource(
                 PolicyName='{}-S3Policy'.format(STACK_NAME),
                 PolicyDocument=s3_policy_doc,
             ),
+            iam.Policy(
+                PolicyName='{}-ClusterAccessPolicy'.format(STACK_NAME),
+                PolicyDocument=emr_cluster_policy,
+            )
         ]
     )
 )
@@ -140,7 +158,7 @@ cluster = template.add_resource(
     emr.Cluster(
         'Cluster',
         DependsOn=['simpleSg'],
-        Name= 'ClusterWithSpark',
+        Name= 'ClusterWithSparkAndSteps',
         ReleaseLabel='emr-5.11.0',
         JobFlowRole=Ref(emr_instance_profile),
         ServiceRole=Ref(emr_service_role ),
@@ -212,11 +230,6 @@ cluster = template.add_resource(
         ]
     )
 )
-
-
-### step ###
-
-
 
 
 template_json = template.to_json(indent=4)
