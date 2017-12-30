@@ -170,11 +170,11 @@ cluster = template.add_resource(
         ],
         LogUri='s3://franziska-adler-emr/logs/',
         BootstrapActions=[
-        emr.BootstrapActionConfig(
-            Name='Add spark task and set conda',
-            ScriptBootstrapAction=emr.ScriptBootstrapActionConfig(
-                Path=BOOTSTRAP_PATH,
-                Args=[cfg['emr']['SPARK_TASK_PATH']]
+            emr.BootstrapActionConfig(
+                Name='Add spark task and set conda',
+                ScriptBootstrapAction=emr.ScriptBootstrapActionConfig(
+                    Path=BOOTSTRAP_PATH,
+                    Args=[cfg['emr']['SPARK_TASK_PATH']]
                 )
             )
         ]

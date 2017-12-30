@@ -9,6 +9,7 @@ ec2_with_cloudwatch_agent:
 emr:
   INSTANCE_COUNT: '2'
   WRITE_BUCKET_ARN: 'arn:aws:s3:::franziska-adler-emr*'
+  SPARK_TASK_PATH: s3://franziska-adler-deployments/production/aws_playground/cloudformation/emr/scripts/some_spark_task.py
 
 deepLearning_ec2:
   EC2_STACK_NAME: 'DeepLearningStack'
