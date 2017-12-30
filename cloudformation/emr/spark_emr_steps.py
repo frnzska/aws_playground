@@ -177,9 +177,46 @@ cluster = template.add_resource(
                     Args=[cfg['emr']['SPARK_TASK_PATH']]
                 )
             )
+        ],
+        Configurations=[
+            emr.Configuration(
+                Classification='spark-env',
+                Configurations=[
+                    emr.Configuration(
+                        Classification="export",
+                        ConfigurationProperties={
+                            "SPARK_HOME": "/usr/lib/spark",
+                            "PYSPARK_PYTHON": "/home/hadoop/conda/bin/python3.6",
+                            "PYTHONHASHSEED": "123"
+                        },
+                    ),
+                ]
+            ),
+            emr.Configuration(
+                Classification="spark-defaults",
+                ConfigurationProperties={
+                    "spark.yarn.appMasterEnv.PYTHONHASHSEED": "123"
+                }
+            ),
+            emr.Configuration(
+                Classification="hadoop-env",
+                Configurations=[
+                    emr.Configuration(
+                        Classification="export",
+                        ConfigurationProperties={
+                            "PYTHONHASHSEED": "123"
+                        }
+                    )
+                ]
+            )
         ]
     )
 )
+
+
+### step ###
+
+
 
 
 template_json = template.to_json(indent=4)
@@ -198,7 +235,7 @@ stack['Parameters'] = [ {'ParameterKey': 'KeyName', 'ParameterValue': cfg['KEY_N
                        ]
 
 # create or delete stack with:
-# cfn.create_stack(**stack)
+cfn.create_stack(**stack)
 # cfn.delete_stack(StackName=stack['StackName'])
 
 # execute spark app in test.py with
