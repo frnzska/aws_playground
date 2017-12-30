@@ -17,10 +17,10 @@ step_definition = {'ActionOnFailure': 'CONTINUE',
 
 def get_cluster_id(name='ClusterWithSparkAndSteps'):
     clusters = emr.list_clusters()['Clusters']
-    cluster_id = [c['Id'] for c in clusters if c['Name']==name][0]
-    return cluster_id
+    cluster_id = [c['Id'] for c in clusters if c['Name']==name]
+    if cluster_id:
+        return cluster_id[0]
 
 id = get_cluster_id()
-print(id)
-response = emr.add_job_flow_steps(JobFlowId=id, Steps=[step_definition])
-print(response)
+if id:
+    response = emr.add_job_flow_steps(JobFlowId=id, Steps=[step_definition])
