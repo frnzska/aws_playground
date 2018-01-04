@@ -1,5 +1,5 @@
 """
-EMR with step. Step is generated with boto3 and assigned in bootstrap script instead of defining it in stack
+EMR with step. Step is generated with boto3 and assigned in bootstrap script instead of defining it in stack.
 """
 import boto3
 from awacs import s3
@@ -14,7 +14,7 @@ template = Template()
 template.add_description('EMR stack with steps')
 
 STACK_NAME = 'EMRWithStepsStack'
-BOOTSTRAP_PATH = 's3://franziska-adler-deployments/production/aws_playground/cloudformation/emr/scripts/bootstrap_task_conda.sh'
+BOOTSTRAP_PATH = 's3://franziska-adler-deployments/production/aws_playground/cloudformation/emr/scripts/bootstrap_task_conda_plus_step.sh'
 
 ### --- Iam --- ###
 
