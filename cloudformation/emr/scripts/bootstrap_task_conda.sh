@@ -21,5 +21,6 @@ if grep isMaster /mnt/var/lib/info/instance.json | grep true;
 then
   IS_MASTER=true
   aws s3 cp $TASK ~/some_spark_task.py
+  aws s3 cp s3://franziska-adler-deployments/production/aws_playground/cloudformation/emr/scripts/kill_me.py ~/kill_me.py
 fi
 echo Done
