@@ -55,7 +55,8 @@ emr_cluster_policy = Policy(
             Sid='ClusterAccess',
             Effect=Allow,
             Action=[Action("elasticmapreduce", "List*"),
-                    Action("elasticmapreduce", "AddJobFlowSteps")
+                    Action("elasticmapreduce", "AddJobFlowSteps"),
+                    Action("elasticmapreduce", "TerminateJobFlows")
                     ],
             Resource=['*']
         )
@@ -168,6 +169,7 @@ cluster = template.add_resource(
         JobFlowRole=Ref(emr_instance_profile),
         ServiceRole=Ref(emr_service_role ),
         Instances=emr.JobFlowInstancesConfig(
+            TerminationProtected='False',
             Ec2KeyName=Ref(key_pair_name_param),
             Ec2SubnetId=Ref(subnet_id_param),
             AdditionalMasterSecurityGroups=[GetAtt('simpleSg', 'GroupId')],
@@ -236,6 +238,37 @@ cluster = template.add_resource(
     )
 )
 
+template.add_resource(
+    emr.Step(
+        'Step',
+        ActionOnFailure='CONTINUE',
+        HadoopJarStep=emr.HadoopJarStepConfig(
+            'jarStep',
+            Jar='command-runner.jar',
+            Args=['spark-submit',  '/home/hadoop/some_spark_task.py']
+        ),
+        JobFlowId=Ref('Cluster'),
+        Name='SomeName'
+    )
+
+)
+
+template.add_resource(
+    emr.Step(
+        'FinalStep',
+        DependsOn='Step',
+        ActionOnFailure='CONTINUE',
+        HadoopJarStep=emr.HadoopJarStepConfig(
+            'finalJarStep',
+            Jar='command-runner.jar',
+            Args=['spark-submit',  '/home/hadoop/kill_me.py']
+        ),
+        JobFlowId=Ref('Cluster'),
+        Name='KillaStep'
+    )
+
+)
+
 
 template_json = template.to_json(indent=4)
 print(template_json)
@@ -253,7 +286,7 @@ stack['Parameters'] = [ {'ParameterKey': 'KeyName', 'ParameterValue': cfg['KEY_N
                        ]
 
 # create or delete stack with:
-# cfn.create_stack(**stack)
+cfn.create_stack(**stack)
 # cfn.delete_stack(StackName=stack['StackName'])
 
 # execute spark app in test.py with
