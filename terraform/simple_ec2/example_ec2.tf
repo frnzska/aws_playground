@@ -12,19 +12,11 @@ resource "aws_instance" "example" {
   tags {
     Name = "my_instance_name"
   }
-
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = "~/.ssh/franzi.pem"
-    timeout     = "1m"
-    agent       = true
-  }
 }
 
 resource "aws_security_group" "allow_ssh" {
-  name        = "allow_all"
-  description = "Allow inbound SSH traffic from my everywhere"
+  name        = "allow_ssh"
+  description = "Allow inbound SSH traffic from everywhere"
   vpc_id      = "vpc-ced904a9"
 
   ingress {
