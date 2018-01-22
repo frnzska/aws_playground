@@ -141,7 +141,7 @@ instance_profile = t.add_resource(iam.InstanceProfile("InstanceProfile", Roles=[
 
 ec2_instance = t.add_resource(ec2.Instance(
     'Ec2Instance',
-    ImageId = "ami-d36386aa",
+    ImageId = "ami-999844e0",
     InstanceType = Ref(instance_type_param),
     SecurityGroupIds=[GetAtt('simpleSg', 'GroupId')],
     Tags=[{"Key" : "Name", "Value" : "deep_learning_EC2"}],
@@ -228,5 +228,5 @@ cfn.validate_template(TemplateBody=template_json)
 # cfn.delete_stack(StackName=stack['StackName'])
 
 ### set the connection with:
-# ssh -i ~/mykeypair.pem -L 8157:127.0.0.1:8888 ec2-user@ec2-###-##-##-###.compute-1.amazonaws.com (public dns)
+# ssh -i ~/.ssh/mykeypair.pem -L 8157:127.0.0.1:8888 ec2-user@ec2-###-##-##-###.compute-1.amazonaws.com (public dns)
 # available https://127.0.0.1:8157
