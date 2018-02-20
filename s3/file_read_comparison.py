@@ -20,10 +20,9 @@ def time_me(trails):
     return time_mee
 
 
-@time_me(trails=3)
+@time_me(trails=1)
 def do_smart_open(dest):
-    for line in smart_open.smart_open(dest):
-        return line
+    return [line for line in smart_open.smart_open(dest)]
 
 @time_me(trails=1)
 def do_boto3(bucket, obj_key):
@@ -38,12 +37,12 @@ def do_boto3(bucket, obj_key):
 
 
 
-#dest = 's3://franziska-adler-test-bucket/events/events133236'
-#do_smart_open(dest)
+dest = 's3://franziska-adler-test-bucket/events/events133236'
+do_smart_open(dest)
 # ~ 0.95 sec 10 trails, 11 events per file
-# ~ 1.18 sec 3 trails, 133236 events per file
+# ~ 12.42 sec 1 trail, 133236 events per file
 
 
-do_boto3(bucket='franziska-adler-test-bucket', obj_key='events/events133236')
+#do_boto3(bucket='franziska-adler-test-bucket', obj_key='events/events133236')
 # ~ 0.51 sec 10 trails, 11 events per file
 # ~196.67 sec 1 trail, 133236 events per file
