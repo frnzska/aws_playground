@@ -1,1 +1,1 @@
-AWS resources
+AWS resources mainly in cloudformation
