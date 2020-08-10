@@ -1,2 +1,2 @@
-AWS resources mainly in cloudformation + python
+AWS resources mainly in cloudformation, python
 
